@@ -1,34 +1,34 @@
-nome: Aggiorna domini
-SU:
-  programma:
-    - cron: "0 */6 * * *" # Esegui ogni 6 ore
-  workflow_dispatch: # Permette di avviare manualmente il flusso di lavoro
-  spingere:
-    rami:    
-      - '**' # corrisponde a ogni ramo
+name: Update Domains
+on:
+  schedule:
+    - cron: "0 */6 * * *"  # Esegui ogni 6 ore
+  workflow_dispatch:      # Permette di avviare manualmente il workflow
+  push:
+    branches:    
+      - '**'         # matches every branch 
 
-lavori:
-  aggiornamento-domini:
-    in esecuzione: ubuntu-latest
-    passaggi:
-    - nome: Deposito di estrazione
-      usi: azioni/checkout@v4
-      con:
-        profondità di recupero: 0
+jobs:
+  update-domains:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
         
-    - nome: Imposta Python
-      usi: azioni/setup-python@v4
-      con:
-        versione python: '3.12'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
         
-    - nome: Installa dipendenze
-      eseguire: |
-        richieste di installazione pip
+    - name: Install dependencies
+      run: |
+        pip install requests
         
-    - nome: Elenca i file per il debug
-      esegui: ls -la
+    - name: List files for debugging
+      run: ls -la
 
-    - nome: Aggiorna i domini in config.json
-      eseguire: |
+    - name: Update domains in config.json
+      run: |
         cd ${{ github.workspace }}
-        aggiornamento_domini.py di Python
+        python update_domains.py
